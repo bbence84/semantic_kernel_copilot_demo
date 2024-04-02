@@ -60,7 +60,7 @@ namespace SemanticKernelConsoleCopilotDemo
             }
             else
             {
-                return "Plan was created. Please check and revise the plan as needed before executing it.";
+                return $"Plan was created. Please check and revise the plan as needed before executing it.{System.Environment.NewLine} {plan.ToString()}";
             }
 
         }
@@ -94,8 +94,8 @@ namespace SemanticKernelConsoleCopilotDemo
                 return "No plan has been created yet. Please provide instructions for a plan first.";
             };
 
-            var planJson = plan.ToString();
-            await System.IO.File.WriteAllTextAsync(filePath, planJson);
+            var planString = plan.ToString();
+            await System.IO.File.WriteAllTextAsync(filePath, planString);
             return "Plan has been saved to the file: " + filePath;
         }
 
@@ -117,7 +117,6 @@ namespace SemanticKernelConsoleCopilotDemo
             }
             var link = Utils.GenMermaidLiveLink(planInMermaidFormat);
             AnsiConsole.MarkupLineInterpolated($"[link={link}]Display Flowchart for Plan[/]");
-            //return "Done. The chart URL has been generated: " + link;
             return "The chart has been generated. Click the above link to view the chart.";
         }          
 

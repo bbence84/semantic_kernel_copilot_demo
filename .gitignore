@@ -8,4 +8,5 @@ vector_storage
 appsettings.json
 ConfigurationSettings.cs
 ConfigSettings.cs
-output
+output/*
+!output/.gitkeep 

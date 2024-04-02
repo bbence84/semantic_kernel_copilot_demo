@@ -10,10 +10,20 @@ namespace SemanticKernelConsoleCopilotDemo
     {
 
         public void OnFunctionInvoking(FunctionInvokingContext context)
-        {
+        {   
             AnsiConsole.WriteLine();
-            var argumentsString = string.Join(",",
-                context.Arguments.Select(pair => string.Format("{0}={1}", pair.Key.ToString(), pair.Value?.ToString())).ToArray());
+            var validParamsList = new List<string>();
+            foreach (var arg in context.Arguments)
+            {   
+                foreach (var param in context.Function.Metadata.Parameters)
+                {   
+                    if (arg.Key.ToString() == param.Name)
+                    {
+                        validParamsList.Add(string.Format("{0}={1}", arg.Key.ToString(), arg.Value?.ToString()));
+                    }
+                }
+            }
+            var argumentsString =  string.Join(", ", validParamsList);
 
             var planPanel = new Panel(new Markup($"[dim]{context.Function.Name}({argumentsString.EscapeMarkup()})[/]"))
                         .Border(BoxBorder.Rounded)
