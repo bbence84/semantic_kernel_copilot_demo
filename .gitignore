@@ -1,0 +1,11 @@
+bin
+obj
+*.ini
+*.cache
+*.log
+*.tmp
+vector_storage
+appsettings.json
+ConfigurationSettings.cs
+ConfigSettings.cs
+output

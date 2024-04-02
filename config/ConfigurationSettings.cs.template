@@ -1,0 +1,14 @@
+using Microsoft.Extensions.Logging;
+public class ConfigurationSettings
+{
+    public const string ApiKey = "XXXXXX";
+	public const string ServiceType = "AzureOpenAI";
+	public const string DeploymentId = "XXXXXX";
+	public const string EmbeddingDeploymentId = "XXXXXX";
+	public const string Endpoint = "XXXXXX";
+	public const string BingAiSearchApiKey = "XXXXXX";
+	public const string GmailEmailUsername = "XXXXXXX@gmail.com";
+	public const string GmailEmailAppPassword = "XXXX";	
+	public const string GmailEmailSender = "John Doe";
+	public const LogLevel LogLevelValue = LogLevel.Warning;
+}
