@@ -15,7 +15,7 @@ namespace SemanticKernelConsoleCopilotDemo
             this.kernel = kernel;
         }
 
-        [KernelFunction, Description("Returns the list of functions / plugins that are available for use. ")]
+        [KernelFunction, Description("Returns the list of functions / plugins that are available for use, can show what the assistant can do.")]
         public string GetAvailableFunctions()
         {
             Utils.PrintFunctionsMetadata(kernel);

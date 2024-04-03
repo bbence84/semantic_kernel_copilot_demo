@@ -199,7 +199,7 @@ namespace SemanticKernelConsoleCopilotDemo
         {
             AnsiConsole.Write(
                 new FigletText("Personal Assistant Copilot Demo")
-                    .LeftJustified()
+                    .Centered()
                     .Color(Color.Green));
             AnsiConsole.WriteLine();
             AnsiConsole.WriteLine();
@@ -208,9 +208,9 @@ namespace SemanticKernelConsoleCopilotDemo
 
             var toolDescription = """
             ✨ This is a POC for using using the [bold yellow]Microsoft Semantic Kernel SDK[/] to implement an LLM based AI [bold yellow]personal assistant[/], which can: ✨
-            [bold yellow]1.[/] Ask questions from the assistant about [bold yellow]certain topics[/] (content made avaiable in a vector store, and retrieved via RAG)
-            [bold yellow]2.[/] Have the assistant come up with a plan for a [bold yellow]task[/] (e.g. organize a conference)
-            [bold yellow]3.[/] The assistant can also perform actual actions to realize the [bold yellow]task[/] (e.g. send an email, search the internet, etc.)
+              [bold yellow]•[/] Ask questions from the assistant about [bold yellow]certain topics[/] [italic](retrieved via RAG)[/] 
+              [bold yellow]•[/] Have the assistant come up with a [bold yellow]plan for a task[/] [italic](e.g. organize a conference)[/] 
+              [bold yellow]•[/] The assistant can also perform actual [bold yellow]actions to realize the task[/] [italic](e.g. send an email, search the internet, etc.)[/] 
             """;
             AnsiConsole.MarkupLine(toolDescription);
             AnsiConsole.WriteLine();
@@ -223,11 +223,20 @@ namespace SemanticKernelConsoleCopilotDemo
         {
             var builder = Kernel.CreateBuilder();
 
-            // Init the Kernel with Azure OpenAI chat completion
-            builder.AddAzureOpenAIChatCompletion(
-                     endpoint: ConfigurationSettings.Endpoint,
-                     deploymentName: ConfigurationSettings.DeploymentId,
-                     apiKey: ConfigurationSettings.ApiKey);
+            #pragma warning disable 0162 // disable unreachable code warning
+            // Init the Kernel with AzureOpenAI or OpenAI chat completion
+            if (ConfigurationSettings.ServiceType == "OpenAI") {
+                builder.AddOpenAIChatCompletion(
+                    modelId: ConfigurationSettings.ModelId,
+                    apiKey: ConfigurationSettings.ApiKey);
+            } else { 
+                builder.AddAzureOpenAIChatCompletion(
+                        endpoint: ConfigurationSettings.Endpoint,
+                        deploymentName: ConfigurationSettings.DeploymentId,
+                        apiKey: ConfigurationSettings.ApiKey);
+            }
+            #pragma warning restore 0162
+
             builder.Services.AddLogging(c => c.AddConsole().SetMinimumLevel(ConfigurationSettings.LogLevelValue));
 
             // Add SK filters so that we can log the function calls and provide function specific logic, e.g. to display a choice list

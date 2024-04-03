@@ -1,14 +1,17 @@
 using Microsoft.Extensions.Logging;
 public class ConfigurationSettings
 {
-    public const string ApiKey = "XXXXXX";
-	public const string ServiceType = "AzureOpenAI";
-	public const string DeploymentId = "XXXXXX";
-	public const string EmbeddingDeploymentId = "XXXXXX";
-	public const string Endpoint = "XXXXXX";
-	public const string BingAiSearchApiKey = "XXXXXX";
-	public const string GmailEmailUsername = "XXXXXXX@gmail.com";
-	public const string GmailEmailAppPassword = "XXXX";	
+	public const string ServiceType = "OpenAI"; 						// AzureOpenAI or OpenAI
+    public const string ApiKey = "sk-xxxx"; 							// OpenAI API key
+	public const string ModelId = "gpt-4"; 								// Only for OpenAI ServiceType
+	public const string EmbeddingModelId = "text-embedding-ada-002"; 	// Only for OpenAI ServiceType
+	public const string DeploymentId = "xxxxxxx"; 						// Only for AzureOpenAI ServiceType
+	public const string EmbeddingDeploymentId = "xxxxx"; 				// Only for AzureOpenAI ServiceType
+	public const string Endpoint = "https://xxxxx.openai.azure.com/";	// Only for AzureOpenAI ServiceType
+
+	public const string BingAiSearchApiKey = "xxxxxx";
+	public const string GmailEmailUsername = "xxxxxx@gmail.com";
+	public const string GmailEmailAppPassword = "xxxxxxx";	
 	public const string GmailEmailSender = "John Doe";
 	public const LogLevel LogLevelValue = LogLevel.Warning;
 }

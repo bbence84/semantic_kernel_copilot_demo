@@ -76,7 +76,7 @@ namespace SemanticKernelConsoleCopilotDemo
             return this;
         }
 
-        private AzureOpenAIConfig GetOpenAIConfig(bool isEmbedding = false)
+        private AzureOpenAIConfig GetAzureOpenAIConfig(bool isEmbedding = false)
         {
             return new AzureOpenAIConfig
             {
@@ -88,17 +88,40 @@ namespace SemanticKernelConsoleCopilotDemo
             };
         }
 
-        private async Task InitKernelMemoryForRAG()
+        private OpenAIConfig GetOpenAIConfig(bool isEmbedding = false)
         {
-            var kernelMemoryBuilder = new KernelMemoryBuilder()
-                .WithAzureOpenAITextEmbeddingGeneration(GetOpenAIConfig(isEmbedding: true))
-                .WithAzureOpenAITextGeneration(GetOpenAIConfig())
-                .WithSimpleVectorDb(new SimpleVectorDbConfig { StorageType = FileSystemTypes.Disk, Directory = "vector_storage"});
+            return new OpenAIConfig
+            {
+                APIKey = ConfigurationSettings.ApiKey,
+                EmbeddingModel = ConfigurationSettings.EmbeddingModelId,
+                TextModel = ConfigurationSettings.ModelId,
+            };
+        }        
 
-            kernelMemoryBuilder.Services
+        private async Task InitKernelMemoryForRAG()
+        {   
+
+            #pragma warning disable 0162 // disable unreachable code warning
+            if (ConfigurationSettings.ServiceType == "OpenAI")
+            {   
+                var kernelMemoryBuilderOpenAI = new KernelMemoryBuilder()
+                    .WithOpenAITextEmbeddingGeneration(GetOpenAIConfig(isEmbedding: true))
+                    .WithOpenAITextGeneration(GetOpenAIConfig())
+                    .WithSimpleVectorDb(new SimpleVectorDbConfig { StorageType = FileSystemTypes.Disk, Directory = "vector_storage" });
+                kernelMemoryBuilderOpenAI.Services
                     .AddLogging(c => { c.AddConsole().SetMinimumLevel(LogLevel.Warning); });
- 
-            kernelMemory = kernelMemoryBuilder.Build();
+                kernelMemory = kernelMemoryBuilderOpenAI.Build();
+
+            } else {
+                var kernelMemoryBuilderAzure = new KernelMemoryBuilder()
+                    .WithAzureOpenAITextEmbeddingGeneration(GetAzureOpenAIConfig(isEmbedding: true))
+                    .WithAzureOpenAITextGeneration(GetAzureOpenAIConfig())
+                    .WithSimpleVectorDb(new SimpleVectorDbConfig { StorageType = FileSystemTypes.Disk, Directory = "vector_storage"});
+                kernelMemoryBuilderAzure.Services
+                    .AddLogging(c => { c.AddConsole().SetMinimumLevel(LogLevel.Warning); });   
+                kernelMemory = kernelMemoryBuilderAzure.Build();
+            }
+            #pragma warning restore 0162
 
             // Import documents to the kernel memory / vector store if does not exist yet or reimportDocuments is set to true
             if (reimportDocuments || IsDirectoryEmpty("vector_storage"))
