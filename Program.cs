@@ -13,15 +13,27 @@ using System.Text.RegularExpressions;
 using Spectre.Console;
 
 /*
+
+    💻 Personal Assistant Copilot Demo 💻
+        Copyright (c) 2024 Bence Blaske
+        Contact: https://github.com/bbence84, https://www.linkedin.com/in/bbence/
+
     🤖 Features 🤖
-        [✔] 
+        [✔] RAG search for documentation lookup and plan guidance creation
+        [✔] Various plugins that the assistant can use to perform actions, e.g. send an email, search the internet, etc.
+            [✔] Planner plugin that can create a plan on how to perform a task and can execute the plan
+            [✔] File input / output plugin
+            [✔] Web search engine plugin
+            [✔] Email sending plugin
+            [✔] Utility plugin that can be used to get the list of functions that are available for use
+
 
     👷 Backlog 👷
-        [ ] Support non-Azure deployments for chat completion & embeddings
+        [✔] Support non-Azure deployments for chat completion & embeddings
         [ ] Support non-english ASSISTANT_LANGUAGE
 
     🙁 Issues / bugs 🙁
-        [!] Handlebars planner hallucinating helpers, e.g. "includes" or "indexOf", temperature setting not possible https://github.com/microsoft/semantic-kernel/issues/4775, https://github.com/microsoft/semantic-kernel/issues/4731 
+        [!] Handlebars planner hallucinating helpers, e.g. "includes" or "indexOf", https://github.com/microsoft/semantic-kernel/issues/4775, https://github.com/microsoft/semantic-kernel/issues/4731 
         [!] Limit the list of functions for the SK Planner to be able to use -- not possible in the Handlebars planner, as ExcludedPlugins is not available, https://github.com/microsoft/semantic-kernel/issues/3830
 
 */
@@ -109,7 +121,7 @@ namespace SemanticKernelConsoleCopilotDemo
 
                 Generic info about processes can be asked retrieved using a function call to RetrieveRagContent.
 
-                If function paramteters for an event are not specified, e.g the date, particpants list, topic for the conference, is not provided, 
+                If function paramteters for a event / conference are not specified, e.g the date, particpants list, topic for the conference, is not provided, 
                 ask the user for the parameters before creating the plan.
                 Don't assume parameters of functions if not provided earlier.
 

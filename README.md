@@ -24,11 +24,18 @@ The starter can be configured by using either:
 using Microsoft.Extensions.Logging;
 public class ConfigurationSettings
 {
-    public const string ApiKey = "XXXXXX";
-	public const string ServiceType = "AzureOpenAI";
-	public const string DeploymentId = "XXXXXX";
-	public const string EmbeddingDeploymentId = "XXXXXX";
-	public const string Endpoint = "XXXXXX";
+	public const string ServiceType = "OpenAI"; 						// AzureOpenAI or OpenAI
+    public const string ApiKey = "sk-xxxx"; 							// OpenAI API key
+	public const string ModelId = "gpt-4"; 								// Only for OpenAI ServiceType
+	public const string EmbeddingModelId = "text-embedding-ada-002"; 	// Only for OpenAI ServiceType
+	public const string DeploymentId = "xxxxxxx"; 						// Only for AzureOpenAI ServiceType
+	public const string EmbeddingDeploymentId = "xxxxx"; 				// Only for AzureOpenAI ServiceType
+	public const string Endpoint = "https://xxxxx.openai.azure.com/";	// Only for AzureOpenAI ServiceType
+
+	public const string BingAiSearchApiKey = "xxxxxx";
+	public const string GmailEmailUsername = "xxxxxx@gmail.com";
+	public const string GmailEmailAppPassword = "xxxxxxx";	
+	public const string GmailEmailSender = "John Doe";
 	public const LogLevel LogLevelValue = LogLevel.Warning;
 }
 ```
@@ -57,11 +64,10 @@ To run the console application just hit `F5`.
 To build and run the application from the terminal use the following commands:
 
 ```bash
-dotnet build
 dotnet run
 ```
 
-## Script you can follow
+## Script and prompts you can try
 
 The following prompts can be checked to test the demo functionalities:
 - What are large language models? *(will do a RAG search)*
@@ -81,17 +87,13 @@ The following prompts can be checked to test the demo functionalities:
 
 You should essentially be doing a project name replacement: https://www.linkedin.com/pulse/how-rename-solution-project-visual-studio-/
 
-## Azure OpenAI API access
-
-This example uses a direct Azure OpenAI API key, not the BTP proxy LLM access or SAP AI Core. If might be possible to either do some monkey-patching to override the default OpenAI libraries, or maybe look into how Semantic Kernel supports overriding the default OpenAI connectors (e.g. https://github.com/microsoft/semantic-kernel/issues/4527) but I am not well versed in C# to try that. Sorry.
-
-## Classes to replace / adjust
+## Classes to adjust for your own use case
 
 #### [plugins/DocuRAGPlugin.cs](plugins/DocuRAGPlugin.cs)
-- Rename the methods RetrieveRagContent and GetProcessGuidance according to your own use case
-- Adjust the Description and parameter decorators 
+- Rename the methods RetrieveRagContent and GetProcessGuidance according to your own use case (if needed)
+- Revise the Description and parameter decorators 
 - Adjust InitKernelMemoryForRAG to import your own documents
-- Via the AddTag SK method, we can "split" the documents into various topics, and only use some of the documents in certain cases (see how the planner only gets guidance from one of the RAG sources)
+- Via the AddTag SK method, we can "split" the documents into various topics, and only use some of the documents in certain cases (see how the planner only gets guidance from one of the RAG sources in GetProcessGuidance and how the RetrieveRagContent uses the other)
 
 #### [plugins/PlannerPlugin.cs](plugins/PlannerPlugin.cs)
 - This class contains the SK Planner plan creator and invocation, via methods CreateProcessPlan and ExecuteProcessPlan
@@ -101,15 +103,17 @@ This example uses a direct Azure OpenAI API key, not the BTP proxy LLM access or
 - The planner plugin can also save and reload plans
 
 #### [plugins/CustomActionsPlugin.cs](plugins/CustomActionsPlugin.cs)
-- This the main Plugin that contains the building blocks that e.g. the planner can use
+- This the main Plugin that contains the building blocks that e.g. the planner can use, in this case: e-mail sending and adding calendar event (with dummy implementation)
 - You can implement your own Plugins in similar way (see [SK documentation](https://learn.microsoft.com/en-us/semantic-kernel/agents/plugins/?tabs=Csharp))
 
 #### [utils/FunctionFilters.cs](utils/FunctionFilters.cs)
 - Filters in SK can be used to add hooks before and after functions area called
 - Here I have a function specific override in OnFunctionInvoked, that shows a file selector in the console if the GetPlansList is called (you can do similar things to better format the output of certain function calls)
+- The other OnFunctionInvoking method is about showing the function call invocation context
 
 #### [Program.cs](Program.cs)
 - The method InitPlugins instantiates the plugins, e.g. your own
 - ChatModelPromptExecutionSettings contains the system prompt for the assistant, it needs to be adjusted
 - WriteIntroToConsole writes the intro message, what the actual tool does that you implement
 - InitKernel sets the SK function filter (see above)
+- Note that the ProcessExpertSystemPrompt contains sometimes references to specific functions in plugins, in order to better guide the model how to "behave" in certain situations, e.g. to clarify missing parameters, etc.
