@@ -1,6 +1,8 @@
 # Process Expert Copilot - Using Microsoft Semantic Kernel
 
-This console application demonstrates how to use the Semantic Kernel using OpenAI LLMs, like GPT4, and leveraging the main features of the framework: RAG for long term memory, planning, function calling, etc.
+This console application demonstrates how to use the [Microsoft Semantic Kernel SDK](https://github.com/microsoft/semantic-kernel/) using OpenAI LLMs, like GPT4, and leveraging the main features of the framework: RAG for long term memory, planning, function calling, etc.
+
+![Screenshot](screenshot.png)
 
 ## Technical realization
 
@@ -88,6 +90,10 @@ The following prompts can be checked to test the demo functionalities:
 You should essentially be doing a project name replacement: https://www.linkedin.com/pulse/how-rename-solution-project-visual-studio-/
 
 ## Classes to adjust for your own use case
+
+#### Current implementation
+
+![Sequence diagram](sequence_diagram.png)
 
 #### [plugins/DocuRAGPlugin.cs](plugins/DocuRAGPlugin.cs)
 - Rename the methods RetrieveRagContent and GetProcessGuidance according to your own use case (if needed)
