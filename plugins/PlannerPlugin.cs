@@ -52,7 +52,7 @@ namespace SemanticKernelConsoleCopilotDemo
             if (planChangeRequested && plan != null)
             {
                 enhancedTask = $"{enhancedTask}. The user has requested a change in the plan. The previous plan was: {System.Environment.NewLine + plan.ToString()}";
-                var loadText = "Adjusting plan...";
+                loadText = "Adjusting plan...";
             }      
 
             plan = await AnsiConsole.Status()
