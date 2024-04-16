@@ -33,7 +33,7 @@ namespace SemanticKernelConsoleCopilotDemo
 
             var askResult = await AnsiConsole.Status()
                .Spinner(Spinner.Known.Dots)
-               .StartAsync("Getting info from documentation...", async (context) =>
+               .StartAsync("Getting info from external sources...", async (context) =>
                {
                    return (await kernelMemory.AskAsync(question, filter: new MemoryFilter().ByTag("topic", "documentation")).ConfigureAwait(continueOnCapturedContext: false)).Result;
                });

@@ -18,8 +18,13 @@ namespace SemanticKernelConsoleCopilotDemo
 {
     internal sealed class CustomActionsPlugin
     {   
+        
+        [KernelFunction, Description("Get the current date and time in YYYY-MM-DD format. ")]
+        public static string GetCurrentDateTime() {
+            return System.DateTime.Now.ToString("yyyy-MM-dd");
+        }
 
-        [KernelFunction, Description("Add an event to the calendar. ")]
+        [KernelFunction, Description("Add an event to the calendar in case adding a calendar event is requested from the end user. ")]
         public static string AddEventToCalendar(
             [Description("Title of the event")] string eventTitle,
             [Description("Description of the event")] string eventDescription, 
@@ -31,9 +36,9 @@ namespace SemanticKernelConsoleCopilotDemo
                 return "Event added to the calendar!";
         }
 
-        [KernelFunction, Description("Send an email to a recipient with a specified subject and body. ")]
+        [KernelFunction, Description("Send an email to a recipient with a specified subject and body. Only one email can be sent at a time. ")]
         public static string SendEMail(
-            [Description("The email address of the recipient. Just the email address.")] string to, 
+            [Description("The email address of the recipient. Just the email address, one email address only!")] string to, 
             [Description("Email subject")] string subject, 
             [Description("Email body")] string body) {
 
@@ -47,7 +52,7 @@ namespace SemanticKernelConsoleCopilotDemo
             using (var client = new SmtpClient ()) {
                 client.Connect("smtp.gmail.com", 465, SecureSocketOptions.SslOnConnect);
                 client.Authenticate (ConfigurationSettings.GmailEmailUsername, ConfigurationSettings.GmailEmailAppPassword);
-                //client.Send (message);
+                client.Send (message);
                 client.Disconnect (true);
                 return "Email sent successfully!";
             }

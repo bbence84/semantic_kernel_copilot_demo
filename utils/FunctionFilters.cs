@@ -18,8 +18,14 @@ namespace SemanticKernelConsoleCopilotDemo
                 foreach (var param in context.Function.Metadata.Parameters)
                 {   
                     if (arg.Key.ToString() == param.Name)
-                    {
-                        validParamsList.Add(string.Format("{0}={1}", arg.Key.ToString(), arg.Value?.ToString()));
+                    {   
+                        if (arg.Key.ToString() == "planToConvert") 
+                        {
+                            validParamsList.Add(string.Format("{0}={1}", arg.Key.ToString(), "<PLAN>"));
+                        } else {
+                            validParamsList.Add(string.Format("{0}={1}", arg.Key.ToString(), arg.Value?.ToString()));
+                        }
+                        
                     }
                 }
             }

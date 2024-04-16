@@ -104,16 +104,7 @@ namespace SemanticKernelConsoleCopilotDemo
         private static OpenAIPromptExecutionSettings ChatModelPromptExecutionSettings()
         {
 
-            String chartUseInstruction = "";
-            if (ENABLE_PLAN_CHART_GENERATION)
-            {
-                chartUseInstruction = """
-                    When asked to create chart using GenerateChartForPlan, pass only the Mermaid code, without any additional text. 
-                    Keep original formatting and tabulators. 
-                    Use the output plan of CreateProcessPlan, use all the steps from the plan, but don't add any new steps.
-                    The chart should not contain any specific details, e.g. dates, names, email addresses, etc.
-                    """;
-            }
+            var CurrentDateText = $$""" The date today is {{ DateTime.Now.ToString("yyyy-MM-dd") }} """;
 
             var ProcessExpertSystemPrompt = $$"""   
                 You are a personal assistant who can help organizing events and arranging certain tasks.
@@ -122,7 +113,7 @@ namespace SemanticKernelConsoleCopilotDemo
                 Generic info about processes can be asked retrieved using a function call to RetrieveRagContent.
 
                 If function paramteters for a event / conference are not specified, e.g the date, particpants list, topic for the conference, is not provided, 
-                ask the user for the parameters before creating the plan.
+                always ask the user for the parameters before creating the plan. Don't assume any information for e.g. an event or conference.
                 Don't assume parameters of functions if not provided earlier.
 
                 If the question is about general topics, use the Kernel Memory RetrieveRagContent function to retrieve the anwsers.
@@ -134,7 +125,7 @@ namespace SemanticKernelConsoleCopilotDemo
                 
                 After creating or adjusting the plan with CreateProcessPlan, don't trigger the plan execution. Let the user decide if the plan is good or not. If she / he says the plan is good, then execute the plan.
                 
-                {{ chartUseInstruction }}
+                {{ CurrentDateText }}
 
                 In case the user asks to load plans, get the file name first using function GetPlansList. Don't ask the filename, but call the function GetPlansList
                 If the filename is known, you can load the plan via LoadPlanFromFile
@@ -235,17 +226,24 @@ namespace SemanticKernelConsoleCopilotDemo
         {
             var builder = Kernel.CreateBuilder();
 
+            var httpClient = new HttpClient
+            {
+                Timeout = TimeSpan.FromMinutes(3),
+            };
+
             #pragma warning disable 0162 // disable unreachable code warning
             // Init the Kernel with AzureOpenAI or OpenAI chat completion
             if (ConfigurationSettings.ServiceType == "OpenAI") {
                 builder.AddOpenAIChatCompletion(
                     modelId: ConfigurationSettings.ModelId,
-                    apiKey: ConfigurationSettings.ApiKey);
+                    apiKey: ConfigurationSettings.ApiKey,
+                    httpClient: httpClient);
             } else { 
                 builder.AddAzureOpenAIChatCompletion(
                         endpoint: ConfigurationSettings.Endpoint,
                         deploymentName: ConfigurationSettings.DeploymentId,
-                        apiKey: ConfigurationSettings.ApiKey);
+                        apiKey: ConfigurationSettings.ApiKey, 
+                        httpClient: httpClient);
             }
             #pragma warning restore 0162
 

@@ -8,7 +8,7 @@ using Spectre.Console;
 /*
     PlannerPlugin: can be used to create a plan for steps that are needed for a process or task
     Exposed functions:
-    - CreateProcessPlan: Create the plan for the task based on provided details.
+    - CreateProcessPlan: Create or adjust the plan for the task based on provided details.
     - ExecuteProcessPlan: Execute the plan that was created earlier.
     - LoadPlanFromFile: Load a plan from a file.
     - SavePlanToFile: Save the plan to a file.
@@ -28,6 +28,7 @@ namespace SemanticKernelConsoleCopilotDemo
         private bool autoExecutePlanAfterCreation;
         private bool enableChartGeneration;
         private string assistantLanguage;
+        private KernelFunction mermaidConverterFunction;
 
         // ----------------- Plugin functions -----------------
 
@@ -38,6 +39,7 @@ namespace SemanticKernelConsoleCopilotDemo
         {
             var enhancedTask = $"{task}. Don't use the GetProcessGuidance, ExecuteProcessPlan or the CreateProcessPlan function in the Handlebars template.";
 
+            var loadText = "Creating plan...";
             if (consultCookbookForPlan && planChangeRequested == false)
             {
                 var guidance = await docuPlugin.GetProcessGuidance(task);
@@ -47,9 +49,15 @@ namespace SemanticKernelConsoleCopilotDemo
                 enhancedTask = $"{enhancedTask}. For coming up with a plan, here is some guidance: {System.Environment.NewLine + guidance} {noHallucinatedHelpers}";
             }
 
+            if (planChangeRequested && plan != null)
+            {
+                enhancedTask = $"{enhancedTask}. The user has requested a change in the plan. The previous plan was: {System.Environment.NewLine + plan.ToString()}";
+                var loadText = "Adjusting plan...";
+            }      
+
             plan = await AnsiConsole.Status()
                 .Spinner(Spinner.Known.Dots)
-                .StartAsync("Creating plan...", async (context) =>
+                .StartAsync(loadText, async (context) =>
                 {
                     return await planner.CreatePlanAsync(kernel, enhancedTask);
                 });
@@ -60,7 +68,7 @@ namespace SemanticKernelConsoleCopilotDemo
             }
             else
             {
-                return $"Plan was created. Please check and revise the plan as needed before executing it.{System.Environment.NewLine} {plan.ToString()}";
+                return $"Plan was created. Please check and revise the plan as needed before executing it.";
             }
 
         }
@@ -108,14 +116,28 @@ namespace SemanticKernelConsoleCopilotDemo
         }        
 
         [KernelFunction, Description("Displays the plan in a flow chart")]
-        public string GenerateChartForPlan(
-            [Description("The plan from the planner function CreateProcessPlan in Mermaid flow chart format. Keeps original formatting and tabulators. Should be a TD chart ")] string planInMermaidFormat)
+        public async Task<string> GenerateChartForPlan()
         {   
             if (!enableChartGeneration)
             {
                 return "";
             }
-            var link = Utils.GenMermaidLiveLink(planInMermaidFormat);
+            if (plan == null)
+            {
+                return "No plan has been created yet. Please provide instructions for a plan first.";
+            };            
+            var planString = plan.ToString();
+
+            var funcResult = await AnsiConsole.Status()
+                .Spinner(Spinner.Known.Dots)
+                .StartAsync("Converting plan to Mermaid Chart...", async (context) =>
+                {
+                    return await kernel.InvokeAsync(mermaidConverterFunction, new() { ["planToConvert"] = planString });
+                });
+
+            var planInMermaidFormat = funcResult.GetValue<string>();
+
+            var link = Utils.GenMermaidLiveLink(planInMermaidFormat??"");
             AnsiConsole.MarkupLineInterpolated($"[link={link}]Display Flowchart for Plan[/]");
             return "The chart has been generated. Click the above link to view the chart.";
         }          
@@ -156,18 +178,43 @@ namespace SemanticKernelConsoleCopilotDemo
 
 
         public PlannerPlugin(Kernel kernel, DocuRAGPlugin docuPlugin, 
-        bool consultCookbookForPlan = false, 
-        bool autoExecutePlanAfterCreation = false, 
-        bool enableChartGeneration = true,
-        string assistantLanguage = "English")
+            bool consultCookbookForPlan = false, 
+            bool autoExecutePlanAfterCreation = false, 
+            bool enableChartGeneration = true,
+            string assistantLanguage = "English")
         {
             planner = InitPlanner();
+            
             this.kernel = kernel;
             this.docuPlugin = docuPlugin;
             this.consultCookbookForPlan = consultCookbookForPlan;
             this.autoExecutePlanAfterCreation = autoExecutePlanAfterCreation;
             this.enableChartGeneration = enableChartGeneration;
             this.assistantLanguage = assistantLanguage;
+
+            this.mermaidConverterFunction = CreateMermaidConverterFunction();
+
+
+        }
+
+        private KernelFunction CreateMermaidConverterFunction()
+        {
+            string converterPrompt = @"
+                Convert the plan that uses the Handlebars template syntax to Mermaid flow chart format.
+                Don't keep any specific details, e.g. names, email addresses, personal details in the Mermaid chart, generalize the plan.
+                Use proper formatting and tabulators for the Mermaid chart. Should be a TD chart.
+                You can represent iterations in the plan, e.g. the #each function in the Handlebars template, for example:
+                flowchart TD
+                    step1-->step2-->step3-->|Loop on step2| step2
+                    step3-->step4    
+                Conditions however should be represented as separate paths in the chart.
+                RETURN JUST THE MERMAID CHART STRING, NO OTHER TEXT OR EXPLANATION. DON'T USE quotes or code blocks in the returned Mermaid chart
+                Don't use ```mermaid or ``` in the returned Mermaid chart, just the string.
+                Again, just the string, no other text or explanation or no code blocks.
+                Process plan to convert: 
+                {{$planToConvert}}
+            ";            
+            return kernel.CreateFunctionFromPrompt(promptTemplate: converterPrompt, functionName: "PlanToMermaidConverter", executionSettings: new OpenAIPromptExecutionSettings() { Temperature = 0.0, TopP = 0.2 });
         }
 
 
