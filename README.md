@@ -2,7 +2,15 @@
 
 This console application demonstrates how to use the [Microsoft Semantic Kernel SDK](https://github.com/microsoft/semantic-kernel/) using OpenAI LLMs, like GPT4, and leveraging the main features of the framework: RAG for long term memory, planning, function calling, etc.
 
-![Screenshot](screenshot.png)
+One of the novel things in this demo compared to other SK examples that it covers many SK features, and uses the Handlebars planner extensively: 
+- the plan is created using a RAG search (cookbook)
+- the plan can be refined (existing plan can be adjusted based on request)
+- the plan can be saved and reloaded
+- the plan can be visualized in a flowchart (using the Mermaid chart syntax, generated using a semantic function)
+
+![Start of the app](screenshot.png)
+![Formal plan from SK](screenshot_plan.png)
+![Mermaid chart of the plan (generated)](screenshot_flowchart.png)
 
 ## Technical realization
 
@@ -71,12 +79,13 @@ dotnet run
 
 ## Script and prompts you can try
 
-The following prompts can be checked to test the demo functionalities:
+The following prompts can be checked to test the demo functionality:
 - What are large language models? *(will do a RAG search)*
-- I would like to organize a conference *(will invoke the planner, but ask for the parameters first)*
-- I would like to organize a conference on the 25th of April, topic is about the uses of AI in log analysis and about AI avatars. The particpants are: Bence - bogusmail@mail.com, Máté - bogusmail2@mail.com, Liza - bogusmail3@gmail.com *(will invoke the planner)*
+- I would like to organize a conference *(will invoke the planner, but the assistant will ask for the missing parameters first)*
+- I would like to organize a conference on the 25th of April, topic is about the uses of AI in log analysis and about AI avatars. The particpants are: Bence - bogusmail@mail.com, Máté - bogusmail2@mail.com, Liza - bogusmail3@gmail.com *(will create a formal plan using planner based on the cookbook)*
+- This plan looks good, but please remove the step that checks other conferences for conflicts *(also invokes the planner but the planner refines the existing plan)*
 - Save a plan *(in case it was already generated)*
-- Load a plan *(in case it was already saved)*
+- Load a plan *(loads an existing plan, in case it was already saved)*
 - Can you visualize the plan in a flow chart? *(will generate a [Mermaid Chart](https://mermaid.js.org/syntax/flowchart.html))*
 - What can you do? *(will list all plugin functions)*
 
