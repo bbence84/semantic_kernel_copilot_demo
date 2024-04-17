@@ -12,6 +12,7 @@ using MimeKit;
     Exposed functions:
     - AddEventToCalendar: Add an event to the calendar.
     - SendEMail: Send an email to a recipient with a specified subject and body.
+    - GetCurrentDateTime: Get the current date and time in YYYY-MM-DD format.
 */
 
 namespace SemanticKernelConsoleCopilotDemo

@@ -39,7 +39,7 @@ namespace SemanticKernelConsoleCopilotDemo
         {
             var enhancedTask = $"{task}. Don't use the GetProcessGuidance, ExecuteProcessPlan or the CreateProcessPlan function in the Handlebars template.";
 
-            var loadText = "Creating plan...";
+            var loadText = "Creating a plan...";
             if (consultCookbookForPlan && planChangeRequested == false)
             {
                 var guidance = await docuPlugin.GetProcessGuidance(task);
@@ -52,7 +52,7 @@ namespace SemanticKernelConsoleCopilotDemo
             if (planChangeRequested && plan != null)
             {
                 enhancedTask = $"{enhancedTask}. The user has requested a change in the plan. The previous plan was: {System.Environment.NewLine + plan.ToString()}";
-                loadText = "Adjusting plan...";
+                loadText = "Adjusting the plan...";
             }      
 
             plan = await AnsiConsole.Status()
@@ -138,7 +138,7 @@ namespace SemanticKernelConsoleCopilotDemo
             var planInMermaidFormat = funcResult.GetValue<string>();
 
             var link = Utils.GenMermaidLiveLink(planInMermaidFormat??"");
-            AnsiConsole.MarkupLineInterpolated($"[link={link}]Display Flowchart for Plan[/]");
+            AnsiConsole.MarkupLineInterpolated($"   [bold][link={link}]Display Flowchart for Plan[/][/] {System.Environment.NewLine}");
             return "The chart has been generated. Click the above link to view the chart.";
         }          
 
@@ -208,6 +208,7 @@ namespace SemanticKernelConsoleCopilotDemo
                     step1-->step2-->step3-->|Loop on step2| step2
                     step3-->step4    
                 Conditions however should be represented as separate paths in the chart.
+                The steps shouldn't just be like step1, step2, but should contain a short description of the action, e.g. 'Send email'.
                 RETURN JUST THE MERMAID CHART STRING, NO OTHER TEXT OR EXPLANATION. DON'T USE quotes or code blocks in the returned Mermaid chart
                 Don't use ```mermaid or ``` in the returned Mermaid chart, just the string.
                 Again, just the string, no other text or explanation or no code blocks.

@@ -31,6 +31,8 @@ using Spectre.Console;
     👷 Backlog 👷
         [✔] Support non-Azure deployments for chat completion & embeddings
         [ ] Support non-english ASSISTANT_LANGUAGE
+        [ ] Better plan summary (via prompt based function?)
+
 
     🙁 Issues / bugs 🙁
         [!] Handlebars planner hallucinating helpers, e.g. "includes" or "indexOf", https://github.com/microsoft/semantic-kernel/issues/4775, https://github.com/microsoft/semantic-kernel/issues/4731 
@@ -212,8 +214,8 @@ namespace SemanticKernelConsoleCopilotDemo
             var toolDescription = """
             ✨ This is a POC for using using the [bold yellow]Microsoft Semantic Kernel SDK[/] to implement an LLM based AI [bold yellow]personal assistant[/], which can: ✨
               [bold yellow]•[/] Ask questions from the assistant about [bold yellow]certain topics[/] [italic](retrieved via RAG)[/] 
-              [bold yellow]•[/] Have the assistant come up with a [bold yellow]plan for a task[/] [italic](e.g. organize a conference)[/] 
-              [bold yellow]•[/] The assistant can also perform actual [bold yellow]actions to realize the task[/] [italic](e.g. send an email, search the internet, etc.)[/] 
+              [bold yellow]•[/] Have the assistant come up with a [bold yellow]plan for a task[/] [italic](e.g. organize a conference)[/], [bold yellow]visualize the plan in a flowchart[/]
+              [bold yellow]•[/] The assistant can perform actual [bold yellow]actions to realize the task[/] [italic](e.g. send an email, search the internet, etc.)[/] 
             """;
             AnsiConsole.MarkupLine(toolDescription);
             AnsiConsole.WriteLine();
@@ -228,7 +230,7 @@ namespace SemanticKernelConsoleCopilotDemo
 
             var httpClient = new HttpClient
             {
-                Timeout = TimeSpan.FromMinutes(3),
+                Timeout = TimeSpan.FromMinutes(5),
             };
 
             #pragma warning disable 0162 // disable unreachable code warning
