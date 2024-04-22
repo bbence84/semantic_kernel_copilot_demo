@@ -11,6 +11,12 @@ namespace SemanticKernelConsoleCopilotDemo
 
         public void OnFunctionInvoking(FunctionInvokingContext context)
         {   
+
+            if (context.Function.Name == "PlanToMermaidConverter") {
+                    // No need to display the result of this function
+                    return;
+            }
+
             AnsiConsole.WriteLine();
             var validParamsList = new List<string>();
             foreach (var arg in context.Arguments)
@@ -41,7 +47,12 @@ namespace SemanticKernelConsoleCopilotDemo
         }
 
         public void OnFunctionInvoked(FunctionInvokedContext context)
-        {
+        {   
+
+            if (context.Function.Name == "CreateProcessPlan" || context.Function.Name == "GenerateChartForPlan") {
+                // No need to display the result of this function
+                return;
+            }
 
             if (context.Function.Name == "GetPlansList")
             {

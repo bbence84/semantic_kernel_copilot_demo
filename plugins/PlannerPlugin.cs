@@ -68,7 +68,8 @@ namespace SemanticKernelConsoleCopilotDemo
             }
             else
             {
-                return $"Plan was created. Please check and revise the plan as needed before executing it.";
+                var planString = plan.ToString();
+                return $"Plan was created. {System.Environment.NewLine + planString + System.Environment.NewLine} Please check and revise the plan as needed before executing it.";
             }
 
         }
@@ -83,8 +84,6 @@ namespace SemanticKernelConsoleCopilotDemo
         public async Task<string> LoadPlanFromFile(
             [Description("The file path to the plan file. ")] string filePath)
         {   
-            //var filePath = "output/plan.hbp";
-
             var planJson = await System.IO.File.ReadAllTextAsync(filePath);
             plan = new HandlebarsPlan(planJson);
             DisplayPlan();
