@@ -1,11 +1,18 @@
-Organizing a conference: first check the internet if there are any conferences on the desired date (check the actual year first), 
-but only for conferences that are related to the topic of the intended conference. 
+Organizing a conference: first check the internet if there are any conferences on the desired date (check the actual year first), but only for conferences that are related to the topic of the intended conference. 
 Then send emails to each of the participants.
 Create a synopsis, for this, look up content about the topic if required via RAG.
 Create a HTML page, including all the HTML elements, e.g. the html, body, etc. tags. in the output folder with the date and title of the conference, the participants list, and the synopsis of the conference. 
 If there are conferences on the same date, create another HTML page that lists these conferences, with filename conflictingconferences.html
 Finally, summarize the steps taken.
------------------------------------------------------------------------------------------------------------------------------------
-Getting good grades in university: First, you need to motivate yourself about the subject. Believe in yourself and encourage yourself to stay focused. Listen and participate in classes, ask for help if needed. Consider working with fellow students. Create a study schedule. Important is to sleep well and stay fit.
------------------------------------------------------------------------------------------------------------------------------------
-Getting rich with AI: Step 1: have a great idea about an AI use case, Step 2: ... Step 3: profit
+---------------------------------------------------------------------------------------------------------------------
+Getting good grades in university: First, you need to motivate yourself about the subject. 
+Believe in yourself and encourage yourself to stay focused. 
+Listen and participate in classes, ask for help if needed. 
+Consider working with fellow students. Create a study schedule. 
+Important is to sleep well and stay fit.
+---------------------------------------------------------------------------------------------------------------------
+Getting rich with AI: 
+Step 1: have a great idea about an AI use case
+Step 2: ...
+Step 3: profit
+---------------------------------------------------------------------------------------------------------------------

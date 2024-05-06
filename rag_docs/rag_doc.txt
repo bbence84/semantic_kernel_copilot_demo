@@ -1,19 +1,19 @@
 Deep learning
 Deep learning is a class of machine learning algorithms that uses multiple layers to progressively extract higher-level features from the raw input. For example, in image processing, lower layers may identify edges, while higher layers may identify the concepts relevant to a human such as digits or letters or faces.
----------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
 Large language model
 A large language model (LLM) is a language model notable for its ability to achieve general-purpose language generation and other natural language processing tasks such as classification. LLMs acquire these abilities by learning statistical relationships from text documents during a computationally intensive self-supervised and semi-supervised training process. LLMs can be used for text generation, a form of generative AI, by taking an input text and repeatedly predicting the next token or word.
----------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
 Machine learning
 Machine learning (ML) is a field of study in artificial intelligence concerned with the development and study of statistical algorithms that can learn from data and generalize to unseen data, and thus perform tasks without explicit instructions. Recently, artificial neural networks have been able to surpass many previous approaches in performance.
----------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
 Reinforcement learning
 Reinforcement learning (RL) is an interdisciplinary area of machine learning and optimal control concerned with how an intelligent agent ought to take actions in a dynamic environment in order to maximize the cumulative reward. Reinforcement learning is one of three basic machine learning paradigms, alongside supervised learning and unsupervised learning.
----------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
 Log analysis with AI
 Machine learning could be part of the solution if not the solution to the challenges of traditional log analysis.
 Computers have proven that they can beat humans. In tasks where there’s a huge volume of data, this ability makes machines capable of driving cars, recognizing images, and detecting cyber threats. 
 With machine learning-powered log analysis, tech teams get rid of routine and repeatable tasks, and engineers can focus on other tasks that can’t be accomplished by machines. Like problem-solving tasks, and thinking of innovative new products.
----------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
 AI avatars
 An AI avatar is more than just a static image or a simple graphic. It is a dynamic and expressive creation that can have lifelike facial expressions, animations, and even produce AI video content. You can use your AI avatar as a profile picture for social media, a gaming character, a virtual presenter, or a personal assistant.

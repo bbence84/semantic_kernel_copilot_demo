@@ -13,7 +13,7 @@ using Spectre.Console;
     - LoadPlanFromFile: Load a plan from a file.
     - SavePlanToFile: Save the plan to a file.
     - GetPlansList: Gets a list of plans that have been saved.
-    - GenerateChartForPlan: Displays the plan in a flow chart (using Mermaid chart format and Mermaid.live)
+    - GenerateFlowChartForPlan: Displays the plan in a flow chart (using Mermaid chart format and Mermaid.live)
 */
 
 namespace SemanticKernelConsoleCopilotDemo
@@ -115,7 +115,7 @@ namespace SemanticKernelConsoleCopilotDemo
         }        
 
         [KernelFunction, Description("Displays the plan in a flow chart")]
-        public async Task<string> GenerateChartForPlan()
+        public async Task<string> GenerateFlowChartForPlan()
         {   
             if (!enableChartGeneration)
             {
@@ -206,7 +206,7 @@ namespace SemanticKernelConsoleCopilotDemo
                 flowchart TD
                     step1-->step2-->step3-->|Loop on step2| step2
                     step3-->step4    
-                Conditions however should be represented as separate paths in the chart.
+                Conditions however should be represented as separate paths in the chart. If there's a condition in the plan, create an expicit true and false path in the chart.
                 The steps shouldn't just be like step1, step2, but should contain a short description of the action, e.g. 'Send email'.
                 RETURN JUST THE MERMAID CHART STRING, NO OTHER TEXT OR EXPLANATION. DON'T USE quotes or code blocks in the returned Mermaid chart
                 Don't use ```mermaid or ``` in the returned Mermaid chart, just the string.
@@ -228,7 +228,7 @@ namespace SemanticKernelConsoleCopilotDemo
                     TopP = 0.1,
                 },                  
                 AllowLoops = true,
-                //ExcludedFunctions =  new HashSet<string> { "GetProcessGuidance", "ExecuteProcessPlan", "CreateProcessPlan", "GenerateChartForPlan" },
+                //ExcludedFunctions =  new HashSet<string> { "GetProcessGuidance", "ExecuteProcessPlan", "CreateProcessPlan", "GenerateFlowChartForPlan" },
 
             });
             return planner;

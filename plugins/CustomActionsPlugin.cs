@@ -12,7 +12,7 @@ using MimeKit;
     Exposed functions:
     - AddEventToCalendar: Add an event to the calendar.
     - SendEMail: Send an email to a recipient with a specified subject and body.
-    - GetCurrentDateTime: Get the current date and time in YYYY-MM-DD format.
+    - TODO: GetCurrentDateTime: Get the current date and time in YYYY-MM-DD format.
 */
 
 namespace SemanticKernelConsoleCopilotDemo
@@ -20,23 +20,6 @@ namespace SemanticKernelConsoleCopilotDemo
     internal sealed class CustomActionsPlugin
     {   
         
-        [KernelFunction, Description("Get the current date and time in YYYY-MM-DD format. ")]
-        public static string GetCurrentDateTime() {
-            return System.DateTime.Now.ToString("yyyy-MM-dd");
-        }
-
-        [KernelFunction, Description("Add an event to the calendar in case adding a calendar event is requested from the end user. ")]
-        public static string AddEventToCalendar(
-            [Description("Title of the event")] string eventTitle,
-            [Description("Description of the event")] string eventDescription, 
-            [Description("Location of the event")]string eventLocation, 
-            [Description("Start date and time of the event")]string eventStartDate, 
-            [Description("End date and time of the event")]string eventEndDate) {
-            
-            // Add the event to the calendar: TODO, implement the logic here
-                return "Event added to the calendar!";
-        }
-
         [KernelFunction, Description("Send an email to a recipient with a specified subject and body. Only one email can be sent at a time. ")]
         public static string SendEMail(
             [Description("The email address of the recipient. Just the email address, one email address only!")] string to, 
@@ -58,6 +41,24 @@ namespace SemanticKernelConsoleCopilotDemo
                 return "Email sent successfully!";
             }
         }
+
+        [KernelFunction, Description("Add an event to the calendar in case adding a calendar event is requested from the end user. ")]
+        public static string AddEventToCalendar(
+            [Description("Title of the event")] string eventTitle,
+            [Description("Description of the event")] string eventDescription, 
+            [Description("Location of the event")]string eventLocation, 
+            [Description("Start date and time of the event")]string eventStartDate, 
+            [Description("End date and time of the event")]string eventEndDate) {
+            
+            // Add the event to the calendar: TODO, implement the logic here
+                return "Event added to the calendar!";
+        }
+
+        [KernelFunction, Description("Get the current date and time in YYYY-MM-DD format. ")]
+        public static string GetCurrentDateTime() {
+            return System.DateTime.Now.ToString("yyyy-MM-dd");
+        }
+
 
         public CustomActionsPlugin()
         {

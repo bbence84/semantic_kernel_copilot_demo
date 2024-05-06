@@ -101,7 +101,10 @@ namespace SemanticKernelConsoleCopilotDemo
         private async Task InitKernelMemoryForRAG()
         {   
 
+            var useAzureAiSearch = true;
+
             #pragma warning disable 0162 // disable unreachable code warning
+            var indexName = "sk_copilot_demo";
             if (ConfigurationSettings.ServiceType == "OpenAI")
             {   
                 var kernelMemoryBuilderOpenAI = new KernelMemoryBuilder()
@@ -113,19 +116,33 @@ namespace SemanticKernelConsoleCopilotDemo
                 kernelMemory = kernelMemoryBuilderOpenAI.Build();
 
             } else {
-                var kernelMemoryBuilderAzure = new KernelMemoryBuilder()
-                    .WithAzureOpenAITextEmbeddingGeneration(GetAzureOpenAIConfig(isEmbedding: true))
-                    .WithAzureOpenAITextGeneration(GetAzureOpenAIConfig())
-                    .WithSimpleVectorDb(new SimpleVectorDbConfig { StorageType = FileSystemTypes.Disk, Directory = "vector_storage"});
-                kernelMemoryBuilderAzure.Services
-                    .AddLogging(c => { c.AddConsole().SetMinimumLevel(LogLevel.Warning); });   
-                kernelMemory = kernelMemoryBuilderAzure.Build();
+                if (useAzureAiSearch) {
+                    var kernelMemoryBuilderAzure = new KernelMemoryBuilder()
+                        .With(new KernelMemoryConfig{ DefaultIndexName = indexName,})
+                        .WithAzureOpenAITextEmbeddingGeneration(GetAzureOpenAIConfig(isEmbedding: true))
+                        .WithAzureOpenAITextGeneration(GetAzureOpenAIConfig())
+                        .WithAzureAISearchMemoryDb(ConfigurationSettings.AiSearchEndpoint, ConfigurationSettings.AiSearchApiKey);
+                    kernelMemoryBuilderAzure.Services
+                        .AddLogging(c => { c.AddConsole().SetMinimumLevel(LogLevel.Warning); });   
+                    kernelMemory = kernelMemoryBuilderAzure.Build();                        
+                } else {
+                    var kernelMemoryBuilderAzure = new KernelMemoryBuilder()
+                        .With(new KernelMemoryConfig{ DefaultIndexName = indexName,})
+                        .WithAzureOpenAITextEmbeddingGeneration(GetAzureOpenAIConfig(isEmbedding: true))
+                        .WithAzureOpenAITextGeneration(GetAzureOpenAIConfig())
+                        .WithSimpleVectorDb(new SimpleVectorDbConfig { StorageType = FileSystemTypes.Disk, Directory = "vector_storage"});
+                    kernelMemoryBuilderAzure.Services
+                        .AddLogging(c => { c.AddConsole().SetMinimumLevel(LogLevel.Warning); });   
+                    kernelMemory = kernelMemoryBuilderAzure.Build();                        
+                }
+
             }
             #pragma warning restore 0162
 
             // Import documents to the kernel memory / vector store if does not exist yet or reimportDocuments is set to true
-            if (reimportDocuments || IsDirectoryEmpty("vector_storage"))
-            {
+            if (reimportDocuments || IsDirectoryEmpty("vector_storage") && useAzureAiSearch == false)
+            {   
+                await kernelMemory.DeleteIndexAsync(indexName); 
                 await kernelMemory.ImportDocumentAsync(new Document().AddFile("rag_docs/rag_doc.txt").AddTag("topic", "documentation"));
                 await kernelMemory.ImportDocumentAsync(new Document().AddFile("rag_docs/process_cookbook.txt").AddTag("topic", "cookbook"));
             }
@@ -134,6 +151,11 @@ namespace SemanticKernelConsoleCopilotDemo
 
         public bool IsDirectoryEmpty(string path)
         {
+            // check if directory exists
+            if (!Directory.Exists(path))
+            {
+                return true;
+            }
             return !Directory.EnumerateFileSystemEntries(path).Any();
         }        
 

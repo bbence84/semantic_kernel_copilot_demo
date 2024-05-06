@@ -4,6 +4,12 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 
+using System.Net.Http;
+using System.Threading.Tasks;
+using Azure;
+using Azure.AI.OpenAI;
+using Azure.Core.Pipeline;
+
 using Microsoft.SemanticKernel.Plugins.Core;
 using Microsoft.SemanticKernel.Plugins.Web;
 using Microsoft.SemanticKernel.Plugins.Web.Bing;
@@ -45,7 +51,7 @@ namespace SemanticKernelConsoleCopilotDemo
     internal class ProcessPlanningChat {
 
         // Settings and experimential features
-        static bool REIMPORT_RAG_DOCUMENTS = true; // Set to true to reimport the RAG documents from the rag_docs folder (to update the vector store with the latest documents)
+        static bool REIMPORT_RAG_DOCUMENTS = false; // Set to true to reimport the RAG documents from the rag_docs folder (to update the vector store with the latest documents)
         static bool CONSULT_COOKBOOK_FOR_PLAN = true; // Set to true to have the logic consult the cookbook before plan creation
         static bool ASK_USER_NAME_AND_LANGUAGE = false; // Set to true to ask the user for his/her name and language when starting the chat
         static bool PRINT_FUNCTIONS_METADATA_ON_START = false; // Set to true to print the list of functions that are available for user at the beginning of the chat
@@ -233,6 +239,11 @@ namespace SemanticKernelConsoleCopilotDemo
                 Timeout = TimeSpan.FromMinutes(5),
             };
 
+            var clientOptions = new OpenAIClientOptions();
+            clientOptions.Retry.MaxRetries = 3;
+            clientOptions.Retry.NetworkTimeout = TimeSpan.FromMinutes(4);
+            var openAIClient = new OpenAIClient(new Uri(ConfigurationSettings.Endpoint), new AzureKeyCredential(ConfigurationSettings.ApiKey), clientOptions);        
+
             #pragma warning disable 0162 // disable unreachable code warning
             // Init the Kernel with AzureOpenAI or OpenAI chat completion
             if (ConfigurationSettings.ServiceType == "OpenAI") {
@@ -241,11 +252,12 @@ namespace SemanticKernelConsoleCopilotDemo
                     apiKey: ConfigurationSettings.ApiKey,
                     httpClient: httpClient);
             } else { 
-                builder.AddAzureOpenAIChatCompletion(
-                        endpoint: ConfigurationSettings.Endpoint,
-                        deploymentName: ConfigurationSettings.DeploymentId,
-                        apiKey: ConfigurationSettings.ApiKey, 
-                        httpClient: httpClient);
+                // builder.AddAzureOpenAIChatCompletion(
+                //         endpoint: ConfigurationSettings.Endpoint,
+                //         deploymentName: ConfigurationSettings.DeploymentId,
+                //         apiKey: ConfigurationSettings.ApiKey, 
+                //         httpClient: httpClient);
+                builder.AddAzureOpenAIChatCompletion(ConfigurationSettings.DeploymentId, openAIClient);                
             }
             #pragma warning restore 0162
 
