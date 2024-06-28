@@ -45,7 +45,7 @@ namespace SemanticKernelConsoleCopilotDemo
                 var guidance = await docuPlugin.GetProcessGuidance(task);
                 var guidanceDebugOutput = guidance.ToString().Truncate(250);
                 AnsiConsole.MarkupLineInterpolated($"[dim grey30][dim grey30 underline]Guidance:[/] {guidanceDebugOutput}[/]");
-                var noHallucinatedHelpers = "Don't use Handlebars helpers that does not exist, e.g. split, substring, indexOf, includes.";
+                var noHallucinatedHelpers = "Don't use Handlebars helpers that does not exist, e.g. split, substring, indexOf, includes, replace.";
                 enhancedTask = $"{enhancedTask}. For coming up with a plan, here is some guidance: {System.Environment.NewLine + guidance} {noHallucinatedHelpers}";
             }
 

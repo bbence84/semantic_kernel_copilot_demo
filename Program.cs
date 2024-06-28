@@ -51,7 +51,7 @@ namespace SemanticKernelConsoleCopilotDemo
     internal class ProcessPlanningChat {
 
         // Settings and experimential features
-        static bool REIMPORT_RAG_DOCUMENTS = false; // Set to true to reimport the RAG documents from the rag_docs folder (to update the vector store with the latest documents)
+        static bool REIMPORT_RAG_DOCUMENTS = true; // Set to true to reimport the RAG documents from the rag_docs folder (to update the vector store with the latest documents)
         static bool CONSULT_COOKBOOK_FOR_PLAN = true; // Set to true to have the logic consult the cookbook before plan creation
         static bool ASK_USER_NAME_AND_LANGUAGE = false; // Set to true to ask the user for his/her name and language when starting the chat
         static bool PRINT_FUNCTIONS_METADATA_ON_START = false; // Set to true to print the list of functions that are available for user at the beginning of the chat
@@ -264,7 +264,8 @@ namespace SemanticKernelConsoleCopilotDemo
             builder.Services.AddLogging(c => c.AddConsole().SetMinimumLevel(ConfigurationSettings.LogLevelValue));
 
             // Add SK filters so that we can log the function calls and provide function specific logic, e.g. to display a choice list
-            builder.Services.AddSingleton<IFunctionFilter, SemanticKernelConsoleCopilotDemo.ProcessFunctionFilter>();
+            builder.Services.AddSingleton<IFunctionInvocationFilter, SemanticKernelConsoleCopilotDemo.ProcessFunctionFilter>();
+
             var kernel = builder.Build();
             return kernel;
 

@@ -6,15 +6,15 @@ using Spectre.Console;
 
 namespace SemanticKernelConsoleCopilotDemo
 {
-    public sealed class ProcessFunctionFilter : IFunctionFilter
+    public sealed class ProcessFunctionFilter : IFunctionInvocationFilter
     {
 
-        public void OnFunctionInvoking(FunctionInvokingContext context)
+        public async Task OnFunctionInvocationAsync(FunctionInvocationContext context, Func<FunctionInvocationContext, Task> next)
         {   
 
             if (context.Function.Name == "PlanToMermaidConverter") {
                     // No need to display the result of this function
-                    return;
+                    //return;
             }
 
             AnsiConsole.WriteLine();
@@ -44,10 +44,7 @@ namespace SemanticKernelConsoleCopilotDemo
             planPanel.Expand = true;                        
             AnsiConsole.Write(planPanel);
 
-        }
-
-        public void OnFunctionInvoked(FunctionInvokedContext context)
-        {   
+            await next(context);
 
             if (context.Function.Name == "CreateProcessPlan" || context.Function.Name == "GenerateChartForPlan") {
                 // No need to display the result of this function
@@ -59,7 +56,7 @@ namespace SemanticKernelConsoleCopilotDemo
                 string[] plansJson = context.Result.GetValue<string[]>() ?? new string[0];
                 if (plansJson == null)
                 {
-                    context.SetResultValue("No plans found!");
+                    context.Result = new FunctionResult(context.Result, "No plans found!");
                     return;
                 }
                 string[]? plansList = plansJson.Select(o => (string?)o ?? "").ToArray() ?? new string[0];
@@ -68,7 +65,7 @@ namespace SemanticKernelConsoleCopilotDemo
                         .Title("Please select the [green]saved plan[/]!")
                         .PageSize(20)
                         .AddChoices(plansList));
-                context.SetResultValue($"The selected plan: {PlanChoice}.");
+                context.Result = new FunctionResult(context.Result, $"The selected plan: {PlanChoice}.");
 
             } 
             else
@@ -89,11 +86,6 @@ namespace SemanticKernelConsoleCopilotDemo
                 AnsiConsole.WriteLine();
             }
 
-        }
-
-        public ProcessFunctionFilter()
-        {
-            
         }
     }
 }

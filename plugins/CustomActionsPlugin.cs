@@ -12,7 +12,7 @@ using MimeKit;
     Exposed functions:
     - AddEventToCalendar: Add an event to the calendar.
     - SendEMail: Send an email to a recipient with a specified subject and body.
-    - TODO: GetCurrentDateTime: Get the current date and time in YYYY-MM-DD format.
+    - GetCurrentDateTime: Get the current date and time in YYYY-MM-DD format.
 */
 
 namespace SemanticKernelConsoleCopilotDemo
@@ -54,10 +54,42 @@ namespace SemanticKernelConsoleCopilotDemo
                 return "Event added to the calendar!";
         }
 
-        [KernelFunction, Description("Get the current date and time in YYYY-MM-DD format. ")]
+
+
+/*         [KernelFunction, Description("Get the current date and time in YYYY-MM-DD format. ")]
         public static string GetCurrentDateTime() {
             return System.DateTime.Now.ToString("yyyy-MM-dd");
         }
+
+        [KernelFunction, Description("Get the current day of the week. ")]
+        public static string GetCurrentWeekDay() {
+            return System.DateTime.Now.DayOfWeek.ToString();
+        }
+
+        [KernelFunction, Description("Get the events from the calendar for the specified date.")]
+        public static string[] CheckCalendarEventsForDate(string date) {
+            // Check the calendar for events on the specified date
+            var day = System.DateTime.Parse(date).Day;
+            if (day % 2 == 0) {
+                return new string[] { "Meeting with Mom 10:00 AM", "Lunch with Clare 1:00 PM" };
+            } else {
+                return new string[] {  };
+            }            
+        }
+
+        [KernelFunction, Description("Get the weather for the specified location, optionally for the specified date.")]
+        public static string GetWeatherForLocation(
+            [Description("The location for which the weather is requested.")] string location,
+            [Description("The date for which the weather is requested. Optinal, otherwise the current day is taken")] string date = "2024-01-01") {
+
+            // Check if the date day is an odd or even day from the date provided
+            var day = System.DateTime.Parse(date).Day;
+            if (day % 2 == 0) {
+                return "Weather for " + location + " is sunny.";
+            } else {
+                return "Weather for " + location + " is partly cloudy.";
+            }
+        } */
 
 
         public CustomActionsPlugin()

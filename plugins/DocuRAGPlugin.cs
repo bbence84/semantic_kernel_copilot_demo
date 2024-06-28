@@ -53,7 +53,8 @@ namespace SemanticKernelConsoleCopilotDemo
                 .Spinner(Spinner.Known.Dots)
                 .StartAsync("Getting plan guidance from cookbook...", async (context) =>
                 {
-                    return (await kernelMemory.AskAsync(question, filter: new MemoryFilter().ByTag("topic", "cookbook")).ConfigureAwait(continueOnCapturedContext: false)).Result;
+                    var ragSearchResult =  (await kernelMemory.AskAsync(question, filter: new MemoryFilter().ByTag("topic", "cookbook")).ConfigureAwait(continueOnCapturedContext: false)).Result;
+                    return $"Anwser based on the following content, don't add your own take on it: {ragSearchResult}. ";
                 });
 
             return askResult;
